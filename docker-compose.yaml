@@ -1,0 +1,36 @@
+services:
+  app:
+    build: .
+    container_name: nest_app
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - nest-rede
+  db:
+    image: postgres:15-alpine
+    container_name: nest_db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - nest-rede
+
+volumes:
+  db-data:
+
+networks:
+  nest-rede:
+    driver: bridge
